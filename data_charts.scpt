@@ -1,3 +1,60 @@
+--  dialog "How many weeks?"
+set number_weeks to 4
+set CurrentDate to (current date)
+set FirstWeek to date string of (CurrentDate - (24 * 60 * 60 * 7 * number_weeks))
+set FirstMonday to do shell script "/Users/ms112y/Documents/charllenge_day_calendar_project/day_generator.sh" as string
+set FirstMondayDate to date (FirstMonday)
+set structure to {}
+tell application "Microsoft Outlook"
+	
+	repeat with thisCalendar in calendars
+		if name of thisCalendar is "Calendar" then
+			set CalEvents to (every calendar event of thisCalendar whose start time is greater than or equal to FirstMondayDate and end time is less than CurrentDate)
+			repeat with theEvent in CalEvents
+				set eventContent to (content of theEvent as string)
+				set eventSubject to (subject of theEvent)
+				set startDate to (start time of theEvent)
+				set endDate to (end time of theEvent)
+				set eventCat to category of theEvent
+				set eventCategories to ""
+				if not category of theEvent = {} then
+					repeat with k from 1 to number of items of eventCat
+						set eventCategories to eventCategories & name of item k of eventCat
+					end repeat
+				end if
+				
+				set AmountHoursInvested to (endDate - startDate) / 60 / 60
+				
+				set timeDiffInDays to (CurrentDate - startDate) / 60 / 60 / 24
+				
+				if timeDiffInDays is greater than or equal to 25 then
+					-- week -4
+				end if
+				
+				if timeDiffInDays is greater than or equal to 18 then
+					-- week -3
+				end if
+				
+				
+				if timeDiffInDays is greater than or equal to 11 then
+					-- week -2
+				end if
+				
+				
+				if timeDiffInDays is greater than or equal to 4 then
+					-- week -1
+				end if
+				
+				
+				if timeDiffInDays is less than 4 then
+					-- current week
+				end if
+				
+			end repeat
+		end if
+	end repeat
+end tell
+
 tell application "Microsoft Excel"
 	
 	tell worksheet 1 of workbook 1
