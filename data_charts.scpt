@@ -4,6 +4,10 @@ set CurrentDate to (current date)
 set FirstWeek to date string of (CurrentDate - (24 * 60 * 60 * 7 * number_weeks))
 set FirstMonday to do shell script "/Users/ms112y/Documents/charllenge_day_calendar_project/day_generator.sh" as string
 set FirstMondayDate to date (FirstMonday)
+set SecondMondayDate to FirstMondayDate + (7 * days)
+set ThirdMondayDate to FirstMondayDate + (14 * days)
+set ForthMondayDate to FirstMondayDate + (21 * days)
+set CurrentMondayDate to FirstMondayDate + (28 * days)
 set structure to {}
 tell application "Microsoft Outlook"
 	
@@ -25,28 +29,27 @@ tell application "Microsoft Outlook"
 				
 				set AmountHoursInvested to (endDate - startDate) / 60 / 60
 				
-				set timeDiffInDays to (CurrentDate - startDate) / 60 / 60 / 24
-				
-				if timeDiffInDays is greater than or equal to 25 then
+				if startDate is greater than or equal to FirstMondayDate and startDate is less than SecondMondayDate then
 					-- week -4
+					
 				end if
 				
-				if timeDiffInDays is greater than or equal to 18 then
+				if startDate is greater than or equal to SecondMondayDate and startDate is less than ThirdMondayDate then
 					-- week -3
 				end if
 				
 				
-				if timeDiffInDays is greater than or equal to 11 then
+				if startDate is greater than or equal to ThirdMondayDate and startDate is less than ForthMondayDate then
 					-- week -2
 				end if
 				
 				
-				if timeDiffInDays is greater than or equal to 4 then
+				if startDate is greater than or equal to ForthMondayDate and startDate is less than CurrentMondayDate then
 					-- week -1
 				end if
 				
 				
-				if timeDiffInDays is less than 4 then
+				if startDate is greater than or equal to CurrentMondayDate then
 					-- current week
 				end if
 				
