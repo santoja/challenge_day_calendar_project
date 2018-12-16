@@ -1,0 +1,67 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript">
+    // https://stackoverflow.com/questions/16949993/inverting-rows-and-columns-on-google-area-chart
+    function transposeDataTable(dataTable) {
+            //step 1: let us get what the columns would be
+            var rows = [];//the row tip becomes the column header and the rest become
+            for (var rowIdx=0; rowIdx < dataTable.getNumberOfRows(); rowIdx++) {
+                var rowData = [];
+                for( var colIdx = 0; colIdx < dataTable.getNumberOfColumns(); colIdx++) {
+                    rowData.push(dataTable.getValue(rowIdx, colIdx));
+                }
+                rows.push( rowData);
+            }
+            var newTB = new google.visualization.DataTable();
+            newTB.addColumn('string', dataTable.getColumnLabel(0));
+            newTB.addRows(dataTable.getNumberOfColumns()-1);
+            var colIdx = 1;
+            for(var idx=0; idx < (dataTable.getNumberOfColumns() -1);idx++) {
+                var colLabel = dataTable.getColumnLabel(colIdx);
+                newTB.setValue(idx, 0, colLabel);
+                colIdx++;
+            }
+            for (var i=0; i< rows.length; i++) {
+                var rowData = rows[i];
+                console.log(rowData[0]);
+                newTB.addColumn('number',rowData[0]); //assuming the first one is always a header
+                var localRowIdx = 0;
+
+                for(var j=1; j< rowData.length; j++) {
+                    newTB.setValue(localRowIdx, (i+1), rowData[j]);
+                    localRowIdx++;
+                }
+            }
+            return newTB;
+      }
+
+    google.charts.load('current', {'packages':['corechart', 'line']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var jsonData = $.ajax({
+          url: "getData.php",
+          dataType: "json",
+          async: false
+          }).responseText;
+
+      var data = new google.visualization.DataTable(jsonData);
+      var chart_weeks = new google.charts.Line(document.getElementById('chart_weeks'));
+      chart_weeks.draw(data);
+
+      var chart_categories = new google.charts.Line(document.getElementById('chart_categories'));
+      chart_categories.draw(transposeDataTable(data));
+    }
+
+    </script>
+  </head>
+
+  <body>
+    <div id="chart_weeks"></div>
+    <br>
+    <br>
+    <div id="chart_categories"></div>
+  </body>
+</html>
